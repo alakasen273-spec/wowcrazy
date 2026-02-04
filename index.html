@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITUATIONSHIP OS v2.14</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg: #0a0a0a; --accent: #ff2e63; --glass: rgba(255, 255, 255, 0.1);
+            --text: #ffffff; --secondary: #08d9d6;
+        }
+        body, html {
+            margin: 0; padding: 0; font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg); color: var(--text); overflow-x: hidden; height: 100%;
+        }
+        .container {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; min-height: 100vh; text-align: center;
+            padding: 20px;
+        }
+        .screen { display: none; width: 100%; max-width: 600px; animation: fadeIn 0.8s ease forwards; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        h1 { font-size: 3.5rem; line-height: 1; margin-bottom: 20px; color: var(--accent); }
+        h2 { font-size: 2rem; color: var(--secondary); margin-bottom: 20px; }
+        p { font-size: 1.2rem; opacity: 0.8; margin-bottom: 30px; }
+        .btn {
+            background: var(--glass); border: 2px solid var(--accent);
+            color: white; padding: 15px 30px; font-size: 1.1rem;
+            border-radius: 12px; cursor: pointer; transition: 0.3s;
+            margin: 10px; display: inline-block; backdrop-filter: blur(10px); font-weight: bold;
+        }
+        .btn:hover { background: var(--accent); transform: scale(1.05); }
+        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .gif-box {
+            width: 100%; border-radius: 20px; margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid var(--glass);
+            background: #1a1a1a; min-height: 200px;
+        }
+        .terms-card {
+            background: var(--glass); padding: 30px; border-radius: 24px;
+            text-align: left; border: 1px solid rgba(255,255,255,0.1);
+            max-height: 60vh; overflow-y: auto;
+        }
+        .floating-text { position: fixed; font-size: 0.7rem; color: var(--accent); opacity: 0.3; z-index: -1; }
+        @media (max-width: 600px) { h1 { font-size: 2.5rem; } .choice-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div class="floating-text" style="top: 10%; left: 5%;">LEFT-WING COALITION</div>
+    <div class="floating-text" style="bottom: 15%; right: 10%;">TEZPUR ✈️ SHILLONG</div>
+
+    <div class="container">
+        <div id="s1" class="screen active">
+            <img src="https://media.tenor.com/dQlUsQheHgwAAAAM/among-us.gif" class="gif-box" alt="Hi Bidhi!">
+            <h1>HIEE BIDHI!!!</h1>
+            <p>I literally stayed up all night wrestling with this code. If it breaks, NO IT WON'T.</p>
+            <button class="btn" onclick="showScreen('s2')">Proceed, Comrade</button>
+        </div>
+
+        <div id="s2" class="screen">
+            <img src="https://img.itch.zone/aW1nLzIwMDQ0OTc3LmdpZg==/original/uLgrbx.gif" class="gif-box">
+            <h2>Happy Valentine’s Day to my favorite notification.</h2>
+            <p>Are we really doing this? A 2026 Interactive Experience designed by Argha (The Developer™).</p>
+            <button class="btn" onclick="showScreen('s3')">The Question...</button>
+        </div>
+
+        <div id="s3" class="screen">
+            <img src="https://media.tenor.com/OeGnPBoP_gUAAAAM/monkey-thinking.gif" class="gif-box" id="main-gif">
+            <h2 id="question-text">Will you be my Valentine?</h2>
+            <div class="choice-grid">
+                <button class="btn" onclick="celebrate()">A. Yes</button>
+                <button class="btn" onclick="celebrate()">B. Option A</button>
+                <button class="btn" onclick="celebrate()">C. Spicy Yes</button>
+                <button class="btn" id="no-btn" onclick="handleNo()">D. No</button>
+            </div>
+        </div>
+
+        <div id="s4" class="screen">
+            <h1>The "Bidhi-Argha" Accord</h1>
+            <div class="terms-card">
+                <p><strong>1. Territory:</strong> This agreement covers the Tezpur-to-Shillong corridor. Any relocation for college requires a 15% increase in quality time and sharing of campus tea.</p>
+                <p><strong>2. Political Alignment:</strong> We hereby agree to remain left-leaning and intellectually superior to everyone else.</p>
+                <p><strong>3. Branding:</strong> We shall maintain the "Exclusive Situationship" status. No labels, just vibes.</p>
+                <p><strong>4. Intellectual Stimulation:</strong> Bidhi is required to stimulate Argha's brain with interesting thoughts. In return, Argha will provide subpar code and high-tier memes.</p>
+            </div>
+            <p style="margin-top: 20px; color: var(--secondary);">Logged & Signed: Argha (The Developer) you will recive aapka gift when your in shillong (terms and conditions applied)</p>
+            <img src="https://pbs.twimg.com/media/GhZah_bXcAARIPV.jpg" width="180" style="border-radius: 10px;">
+        </div>
+    </div>
+
+    <script>
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        let noCount = 0;
+        const beggingGifs = [
+            "https://i.pinimg.com/474x/98/ac/5a/98ac5a8efa2df09487797c30cec0447f.jpg",
+            "https://i.pinimg.com/236x/39/32/81/393281bb8a4a71850970b5710ad32a75.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Green_and_Black%27s_dark_chocolate_bar_2.jpg/330px-Green_and_Black%27s_dark_chocolate_bar_2.jpg",
+            "https://media.tenor.com/PGmTI3ORSFAAAAAM/beg-begging.gif",
+            "https://media.tenor.com/3AI4y8DApaIAAAAM/red-ball-angry.gif"
+        ];
+
+        function handleNo() {
+            const noBtn = document.getElementById('no-btn');
+            const gif = document.getElementById('main-gif');
+            if (noCount < 5) {
+                gif.src = beggingGifs[noCount];
+                noBtn.innerText = ["Wait I think the button is laggy and you clicked the wrong option?", "Is it because im a Shillong 10 but a Tezpur 4? Rude.", "I'll buy you chocolates!", "Pls...I'm begging you", "LAST CHANCE"][noCount];
+                noCount++;
+            } else {
+                noBtn.style.display = 'none';
+                document.getElementById('question-text').innerText = "NO BUTTON DEACTIVATED. CHOOSE YES.";
+            }
+        }
+
+        function celebrate() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            setTimeout(() => { showScreen('s4'); }, 1000);
+        }
+    </script>
+</body>
+</html>
